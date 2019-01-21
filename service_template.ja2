@@ -1,0 +1,15 @@
+{% for service in services %}
+class {{ service.name.title() }}:
+{%- if service.build %}
+    BUILD ={{ service.build }}
+{%- else %}
+    BUILD = None
+{%- endif %}
+{%- if service.image %}
+    IMAGE ='{{ service.image }}'
+{%- else %}
+    IMAGE = None
+{%- endif %}
+    VOLUMES = {{ service.volumes }}
+    DEPENDS_ON = {{ service.deps if service.deps else [] }}
+{% endfor %}

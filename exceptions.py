@@ -1,0 +1,2 @@
+class PydockException(Exception):
+    pass
