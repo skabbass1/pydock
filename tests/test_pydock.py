@@ -1,4 +1,5 @@
 import pathlib
+from unittest.mock import MagicMock
 
 import pytest
 import yaml
@@ -103,6 +104,27 @@ def test_exec_raises():
         pydock._exec()
 
     assert str(expinfo.value) == 'unable to locate service definition file'
+
+
+def test_run_docker_compose_invokes_correct_docker_compose_command(monkeypatch):
+    """
+    it invokes  correct  docker compose command in subprocess
+    """
+    import subprocess
+    mocked_run = MagicMock()
+    monkeypatch.setattr(subprocess, 'run', mocked_run)
+    pydock._run_docker_compose()
+    mocked_run.assert_called_with(['docker-compose','run', 'pydock', 'bash'])
+
+def test_down_invokes_correct_docker_compose_command(monkeypatch):
+    """
+    it invokes corret docker compose command in subprocess
+    """
+    import subprocess
+    mocked_run = MagicMock()
+    monkeypatch.setattr(subprocess, 'run', mocked_run)
+    pydock._down()
+    mocked_run.assert_called_with(['docker-compose','down'])
 
 
 @pytest.fixture()
