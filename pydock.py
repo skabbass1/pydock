@@ -61,7 +61,7 @@ def _service_def_file_contents():
         return f.read()
 
 def _run_docker_compose():
-    subprocess.run(['docker-compose', 'run', 'pydock', 'bash'])
+    subprocess.run(['docker-compose', 'run', _app_name(), 'bash'])
 
 def _generate_requirements_file(requires_packages):
     with open('requirements.txt', 'w') as f:
