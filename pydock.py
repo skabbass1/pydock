@@ -40,6 +40,9 @@ def down():
     """
     stops and removes the running containers, networks and volumes
     """
+    _down()
+
+def _down():
     subprocess.run(['docker-compose', 'down'])
 
 def _exec():
