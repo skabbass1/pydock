@@ -24,7 +24,7 @@ def init(depends_on, requires_packages):
     _generate_requirements_file(requires_packages)
     _generate_docker_file()
     _generate_pydock_service_file(
-        app_name=pathlib.Path('.').absolute().name,
+        app_name=_app_name(),
         depends_on=depends_on
     )
 
@@ -49,6 +49,9 @@ def _exec():
     contents = _service_def_file_contents()
     _generate_docker_compose(contents)
     _run_docker_compose()
+
+def _app_name():
+    return pathlib.Path('.').absolute().name
 
 def _service_def_file_contents():
     path = pathlib.Path('pydock_service_def.py')
