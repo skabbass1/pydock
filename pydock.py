@@ -1,4 +1,5 @@
 import pathlib
+import os
 import subprocess
 import tempfile
 
@@ -61,7 +62,11 @@ def _service_def_file_contents():
         return f.read()
 
 def _run_docker_compose():
-    subprocess.run(['docker-compose', 'run', _app_name(), 'bash'])
+    # set tag for the development docker container
+    os.environ['TAG'] = 'latest'
+    subprocess.run(
+        ['docker-compose', 'run', _app_name(), 'bash'],
+    )
 
 def _generate_requirements_file(requires_packages):
     with open('requirements.txt', 'w') as f:
@@ -102,6 +107,7 @@ def _service_dependency_def(dependencies):
 def _app_service_def(app_name, service_dependencies):
     return structures.ServiceDef(
         name=app_name,
+        image=f'{app_name}:${{TAG}}',
         build={
             'context': '.',
             'args': {

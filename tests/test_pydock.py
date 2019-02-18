@@ -31,7 +31,7 @@ def test_app_service_def():
     assert service_def == structures.ServiceDef(
         name='pydock',
         build={'context': '.', 'args': {'app_name': 'pydock'}},
-        image=None,
+        image='pydock:${TAG}',
         volumes=['.:/pydock'],
         deps=['redis', 'postgres']
     )
@@ -47,7 +47,7 @@ def test_generate_pydock_service_file(cleanup):
     ns = docker_compose._load_and_exec(contents)
 
     assert ns['Pydock'].BUILD == {'context': '.', 'args': {'app_name': 'pydock'}}
-    assert ns['Pydock'].IMAGE == None
+    assert ns['Pydock'].IMAGE == 'pydock:${TAG}'
     assert ns['Pydock'].VOLUMES == ['.:/pydock']
     assert ns['Pydock'].DEPENDS_ON == ['redis', 'postgres']
 
@@ -80,6 +80,7 @@ def test_generate_docker_compose(cleanup):
                 'image': 'postgres'
             },
             'pydock': {
+                'image': 'pydock:${TAG}',
                 'build': {
                     'args': {
                         'app_name': 'pydock'
