@@ -127,6 +127,18 @@ def test_down_invokes_correct_docker_compose_command(monkeypatch):
     pydock._down()
     mocked_run.assert_called_with(['docker-compose','down'])
 
+def test_build_invokes_correct_docker_compose_command(monkeypatch, cleanup):
+    """
+    it invokes corret docker compose command in subprocess
+    """
+    import subprocess
+    mocked_run = MagicMock()
+    monkeypatch.setattr(subprocess, 'run', mocked_run)
+
+    pydock._generate_pydock_service_file(app_name='pydock', depends_on=['redis', 'postgres'])
+    pydock._build(tag='1.1')
+
+    mocked_run.assert_called_with(['docker-compose','build'])
 
 @pytest.fixture()
 def cleanup():

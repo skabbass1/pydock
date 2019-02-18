@@ -43,6 +43,14 @@ def down():
     """
     _down()
 
+@cli.command()
+@click.argument('tag')
+def build(tag):
+    """
+    builds app container with given tag
+    """
+    _build(tag)
+
 def _down():
     subprocess.run(['docker-compose', 'down'])
 
@@ -50,6 +58,12 @@ def _exec():
     contents = _service_def_file_contents()
     _generate_docker_compose(contents)
     _run_docker_compose()
+
+def _build(tag):
+    contents = _service_def_file_contents()
+    _generate_docker_compose(contents)
+    os.environ['TAG'] = tag
+    subprocess.run(['docker-compose', 'build'])
 
 def _app_name():
     return pathlib.Path('.').absolute().name
