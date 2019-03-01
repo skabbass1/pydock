@@ -18,12 +18,13 @@ def cli():
 @cli.command()
 @click.option('--depends-on','-d' , multiple=True)
 @click.option('--requires-packages', '-r', multiple=True)
-def init(depends_on, requires_packages):
+@click.option('--base-python-image', '-b', default='python')
+def init(depends_on, requires_packages, base_python_image):
     """
     sets up a base Dockerfile and service definition file
     """
     _generate_requirements_file(requires_packages)
-    _generate_docker_file()
+    _generate_docker_file(base_python_image)
     _generate_pydock_service_file(
         app_name=_app_name(),
         depends_on=depends_on
@@ -87,9 +88,9 @@ def _generate_requirements_file(requires_packages):
         for package in requires_packages:
             print(package, file=f)
 
-def _generate_docker_file():
+def _generate_docker_file(base_python_image):
     with open('Dockerfile', 'w') as f:
-        f.write(_docker_file_template())
+        f.write(_docker_file_template(base_python_image))
 
 def _generate_pydock_service_file(app_name, depends_on):
     dependencies = _service_dependency_def(depends_on)
@@ -135,9 +136,9 @@ def _app_service_def(app_name, service_dependencies):
 def _base_image():
     return 'python:3.7-slim'
 
-def _docker_file_template():
-    template = '''
-FROM python:3.7-slim
+def _docker_file_template(base_python_image):
+    template = f'''
+FROM {base_python_image}
 
 ARG app_name
 
